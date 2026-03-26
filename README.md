@@ -1,48 +1,130 @@
 # SIS Editorial Orchestrator
 
-The SIS Editorial Orchestrator is a small editorial runtime.
+SIS Editorial Orchestrator is a modular editorial runtime for AI-assisted writing, rewriting, compression, auditing, title generation, and ex-novo content development.
 
-It does not hardcode one editorial method. It loads a **source payload**, a **session**, and a **selected stack** of library objects, then runs the stack in order. The core stays the same. The method changes by changing the selected Role, Mode, and Steps.
+It is designed for people who want something more controlled than a one-off prompt and more flexible than a single hardcoded workflow.
 
-## What it is
-
-The Orchestrator is built from three parts:
+Instead of baking one editorial method into the system, the Orchestrator separates the work into three parts:
 
 - **App** — the execution engine
 - **Library** — selectable Roles, Modes, and Steps
-- **Structured Input** — the run configuration and source material
+- **Structured Input** — the source material and run configuration
 
-The app is deliberately simple:
+That separation is the point.
 
-- `payload` = source input
-- `session_payload` = mutable working state
-- Role and Mode influence Steps
-- Steps execute in Session order
-- `session_payload` changes only when a Step returns payload
+The **core stays fixed**.  
+The **method changes by selecting a different stack**.
+
+---
+
+## What the Editorial Orchestrator is
+
+The Orchestrator is a loop-based editorial system.
+
+You give it:
+
+- a **source payload**
+- a **session**
+- a selected **Role**
+- a selected **Mode**
+- an ordered list of **Steps**
+
+It then runs the selected stack against the payload using the same execution model every time.
+
+This makes it useful for very different editorial jobs without rewriting the engine itself.
+
+Examples:
+
+- improve an article draft
+- generate copy from unstable material
+- compress a long draft without losing the spine
+- audit a compressed result for omissions and distortion
+- derive a title from an article
+- run multiple editorial passes using the same source input
+
+---
+
+## Core idea
+
+The system uses two payload states:
+
+- `payload` = the source input
+- `session_payload` = the mutable working state
+
+That distinction matters.
+
+Some editorial tasks transform the source directly. Others derive a working artifact from the source and iterate there.
+
+Because the Orchestrator preserves this separation, the same engine can support rewrite workflows, audit workflows, and derivative workflows like title generation.
+
+Compressed:
+
+**The system is fixed. The method is selected.**
+
+---
 
 ## How the loop works
 
 A run is a loop over selected Steps.
 
-1. Load Definitions, payload, Session, and Library.
-2. Resolve the selected Role, Mode, and Steps from the Library.
-3. Initialize `session_payload` from `payload`.
-4. Run the selected Steps in order.
-5. If a Step returns payload, replace `session_payload`.
-6. Repeat for the configured number of loops.
-7. Print according to `output_settings`.
+1. Load the app.
+2. Load Structured Input.
+3. Resolve the selected Role, Mode, and Steps from the Library.
+4. Initialize `session_payload` from `payload`.
+5. Run the selected Steps in Session order.
+6. If a Step returns payload, replace `session_payload`.
+7. Repeat for the configured number of loops.
+8. Print according to `output_settings`.
 
-This means the system can support very different editorial jobs without changing the core.
+This means the Orchestrator is not tied to one editorial ideology. It can run a corrective stack, a generative stack, a compression stack, or a title-generation stack using the same core logic.
 
-## Example step behavior
+---
 
-A Step is just a named operation in the Library.
+## Example: what a Step is
+
+A Step is a named operation in the Library.
 
 Example:
 
 `Compress: Reduces the payload by removing filler, redundancy, and non-essential surface material while preserving the conceptual spine.`
 
-If `Compress` is included in the session stack, it will run where it appears in the step order. If it returns a new payload, that new payload becomes the next `session_payload`.
+That definition is intentionally simple.
+
+The app handles execution. The Session handles selection and order. The Library only needs to define what the Step is.
+
+That makes the system easy to extend.
+
+---
+
+## Why this exists
+
+Most AI writing workflows fall into one of two weak patterns:
+
+- a generic prompt that tries to do everything at once
+- a rigid workflow that is difficult to adapt
+
+The Orchestrator takes a different approach.
+
+It gives you:
+
+- a reusable editorial engine
+- a lightweight library of editorial operations
+- structured input that makes runs inspectable and repeatable
+- the ability to change method without changing system logic
+
+This makes it useful for:
+
+- prompt engineering
+- editorial systems design
+- AI writing workflows
+- structured rewriting
+- content strategy
+- article development
+- title generation
+- compression and audit work
+- experimental stack design
+
+---
 
 ## Example stacks
 
@@ -66,29 +148,75 @@ If `Compress` is included in the session stack, it will run where it appears in 
 - Mode: `Creative`
 - Steps: `ExtractTitleSignal`, `TitleFromSignal`
 
-## Why the library matters
+---
 
-The library is flexible on purpose.
+## Why the Library matters
 
-One of the system’s strengths is how easy it is to add new Steps without changing the app. The core logic does not need to know whether a Step is corrective, generative, auditing, compressive, or title-related. It only needs to run the selected stack in order.
+The Library is deliberately simple and flexible.
+
+One of the system’s strengths is how easy it is to add new Steps without changing the app.
+
+You do not need to rewrite the engine to introduce a new editorial operation.
+
+You only need to define a new library object and then select it in a Session.
 
 That keeps the system lean:
 
-- the **app** stays small
+- the **app** remains stable
 - the **library** grows as needed
-- the **session** selects only the objects needed for the task
+- the **session** selects only what the task requires
+
+This is one of the main reasons the Orchestrator is useful as a real working system rather than a single prompt.
+
+---
+
+## Structured Input
+
+The app does not run from unstructured instruction alone.
+
+It expects Structured Input.
+
+Structured Input contains:
+
+- **Definitions** — context, instructions, success conditions, and supporting constraints
+- **Payload** — the source input
+- **Session** — the selected stack and execution settings
+
+This gives each run a visible shape and makes editorial work easier to inspect, rerun, and refine.
+
+See `INSTRUCTIONS.md` for the full template and block-by-block guidance.
+
+---
 
 ## Repository contents
 
-- `README.md` — overview, loop concept, and examples
-- `INSTRUCTIONS.md` — usage guidance and structured-input template with field notes
+- `README.md` — what the Orchestrator is, how it works, and why it exists
+- `INSTRUCTIONS.md` — usage guidance, structured-input template, and block breakdown
 - `APP.md` — the loadable app / engine
-- `sample-definitions-block.xml` — sample definitions block for article improvement
+- `sample-definitions-block.xml` — a sample definitions block for article improvement
+
+---
 
 ## Quick start
 
-1. Load `APP.md`.
-2. Wait for the assistant to acknowledge and enter **Structured Input** standby.
-3. Submit your customized Structured Input.
-4. Review the result.
-5. Refine the input and rerun if necessary.
+1. Load `APP.md` into the assistant.
+2. The assistant acknowledges load completion and transitions to **waiting for Structured Input**.
+3. Provide your customized Structured Input using the template and examples in `INSTRUCTIONS.md` and `sample-definitions-block.xml`.
+4. The assistant runs the selected stack against your payload.
+5. Review the final output.
+6. Adjust your Structured Input and run again if needed.
+
+---
+
+## Who this is for
+
+This repository is most useful for people working on:
+
+- AI-assisted editorial systems
+- structured content improvement
+- repeatable prompt workflows
+- high-signal rewriting
+- modular prompt architecture
+- article shaping and audit workflows
+
+If you want a reusable editorial runtime rather than a single-purpose prompt, this is what this project is for.
