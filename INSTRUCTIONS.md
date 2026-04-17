@@ -50,66 +50,64 @@ Keep loops low unless another pass is likely to produce structural improvement r
 Use this template for every run.
 
 ```xml
-<context_definition>
-[Place contextual information here.]
-</context_definition>
+STRUCTURED INPUT TEMPLATE
 
-<instructions_definition>
-[Place direct instructions here.]
-</instructions_definition>
+Structured Input template.
+Recommended minimal: contextual_data, instructions_definition, goals_success_definition, payload.
 
-<success_conditions_definition>
-[Place success conditions here.]
-</success_conditions_definition>
+<structured_input>
+  <contextual_data>
+  [Context, audience, domain, or relevant constraints.]
+  </contextual_data>
 
-<other_definitions>
-[Optional. Place exclusions, constraints, notes, or other supporting definitions here.]
-</other_definitions>
+  <instructions_definition>
+  [What should be done to the payload.]
+  </instructions_definition>
 
-<payload>
-[Place the source input here.]
-</payload>
+  <goals_success_definition>
+  [Goals and success criteria.]
+  </goals_success_definition>
 
-<session>
+  <payload>
+  [Source input.]
+  </payload>
 
-<library_reference>
-[Optional. Specify the active library if more than one library exists. If omitted, use the loaded default library.]
-</library_reference>
+  <session_directives>
+    <role>
+    [Select one Role from the Library.]
+    </role>
 
-<role>
-[Select one Role from the Library.]
-</role>
+    <mode>
+    [Select one Mode from the Library.]
+    </mode>
 
-<mode>
-[Select one Mode from the Library.]
-</mode>
+    <steps>
+    [Provide the ordered list of Steps to execute.]
+    </steps>
 
-<steps>
-[Provide the ordered list of Steps to execute.]
-</steps>
+    <loops>
+    [Provide the number of loop cycles to run.]
+    </loops>
 
-<loops>
-[Provide the number of loop cycles to run.]
-</loops>
+    <step_output>
+    [quiet | minimal | full | double]
+    </step_output>
 
-<explicit_directives>
-[Optional. Place run-specific directives here.]
-</explicit_directives>
+    <loop_output>
+    [quiet | full]
+    </loop_output>
 
-<output_settings>
-step_output: [quiet | minimal | full]
-loop_output: [quiet | full]
-final_payload_output: [off | full]
-</output_settings>
-
-</session>
+    <final_payload_output>
+    [off | full | double]
+    </final_payload_output>
+  </session_directives>
+</structured_input>
 ```
 
 ---
-
 ## Structured Input block breakdown
 
-### `context_definition`
+### `contextual_data`
 Use this block for background and framing.
 
 This is where you tell the system what kind of artifact it is dealing with, who it is for, what context it lives in, what surrounding conditions matter, and what broader situation should shape interpretation.
@@ -150,7 +148,7 @@ Ask:
 
 ---
 
-### `success_conditions_definition`
+### `goals_success_definition`
 Use this block for outcome criteria.
 
 This is where you define what a successful result must do, how it should function, and what “good” means for this run.
@@ -165,26 +163,6 @@ Typical contents:
 
 Ask:
 **How will we know the run succeeded?**
-
----
-
-### `other_definitions`
-Use this block for everything important that does not belong naturally in the first three blocks.
-
-This is the pressure-release block. It keeps the main definitions clean while still allowing additional constraints.
-
-Typical contents:
-- tone constraints
-- exclusions
-- editorial pressure points
-- caveats
-- publication logic
-- things to avoid
-- removable or suspect sections
-- special handling notes
-
-Ask:
-**What matters, but does not fit neatly elsewhere?**
 
 ---
 
@@ -207,38 +185,34 @@ The payload is not the instructions. It is the thing being worked on.
 Ask:
 **What is the source material for this run?**
 
----
-
-### `session`
+### `session_directives`
 Use this block to configure the run.
 
 This is where you choose the working stack and execution behavior.
 
-Session contains:
+Session directives contain:
 
-- `library_reference` — which library to use
-- `role` — one Role from the library
-- `mode` — one Mode from the library
+- `role` — one Role from the Library
+- `mode` — one Mode from the Library
 - `steps` — ordered Steps to execute
 - `loops` — number of loop cycles
-- `explicit_directives` — optional run-specific instructions
-- `output_settings` — visibility settings
+- `step_output` — per-step visibility [quiet | minimal | full | double]
+- `loop_output` — per-loop visibility [quiet | full]
+- `final_payload_output` — final output visibility [off | full | double]
 
 Ask:
 **How should this run behave?**
-
 ---
 
 ## How to think about the blocks
 
 A good Structured Input usually has this shape:
 
-- **Context** explains the world around the artifact.
+- **Contextual data** explains the world around the artifact.
 - **Instructions** explain what to do.
-- **Success conditions** explain what the result must accomplish.
-- **Other definitions** capture special constraints.
+- **Goals and success conditions** explain what the result must accomplish.
 - **Payload** supplies the source material.
-- **Session** selects the method.
+- **Session directives** selects the method.
 
 That is the simplest way to think about it.
 
@@ -247,88 +221,50 @@ That is the simplest way to think about it.
 ## Example use cases
 
 ### Revision / corrective work
-- Role: `Writer`
-- Mode: `PackRanger`
-- Steps: `NotLikeThat`, `LikeThisInstead`, `Consolidate`
+- `role`: `Writer`
+- `mode`: `PackRanger`
+- `steps`: `NotLikeThat`, `LikeThisInstead`, `Consolidate`
 
-### Ex-novo generation
-- Role: `Seeder`
-- Mode: `Creative` or `PackRanger`
-- Steps: `ExplodeTheBasis`, `Orthogonalize`, `Consolidate`
+Use when the payload already exists and needs correction, tightening, or directional improvement.
 
-### Compression audit
-- Role: `Writer`
-- Mode: `Creative`
-- Steps: `Compress`, `AuditCompress`, `Consolidate`
+### Exploratory generation from weak or unstable material
+- `role`: `Seeder`
+- `mode`: `Creative`
+- `steps`: `ExplodeTheBasis`, `Orthogonalize`, `Consolidate`
 
-### Title generation
-- Role: `Writer`
-- Mode: `Creative`
-- Steps: `ExtractTitleSignal`, `TitleFromSignal`
+Use when the starting material is rough, unstable, incomplete, or conceptually under-formed.
 
----
+### Compression with verification
+- `role`: `Writer`
+- `mode`: `PackRanger`
+- `steps`: `Compress`, `AuditCompress`, `Consolidate`
 
-## Output settings
+Use when the goal is to reduce length or density without losing key meaning or distinctions.
 
-```xml
-<output_settings>
-step_output: [quiet | minimal | full]
-loop_output: [quiet | full]
-final_payload_output: [off | full]
-</output_settings>
-```
+### Loop audit / drift check
+- `role`: `Writer`
+- `mode`: `PackRanger`
+- `steps`: `NotLikeThat`, `LikeThisInstead`, `Consolidate`, `AuditLoop`
 
-### `step_output`
-Controls per-step visibility.
+Use when you want a normal transformation stack followed by a loop-level check for drift, weak continuation, or diminishing returns.
 
-- `quiet` — print nothing at step level
-- `minimal` — print progress lines such as `Loop 1 - Step 2: Done`
-- `full` — print step name and step output when present
+### Signal extraction
+- `role`: `Writer`
+- `mode`: `PackRanger`
+- `steps`: `ExtractSignals`
 
-### `loop_output`
-Controls whether the full working payload is shown at the end of each loop.
+Use when the goal is to surface the strongest signals in the current payload without changing the working state.
 
-- `quiet` — no loop-level print
-- `full` — print the full `session_payload` after each loop
+### Title generation from extracted signals
+- `role`: `Writer`
+- `mode`: `Creative`
+- `steps`: `ExtractSignals`, `TitleFromSignal`
 
-### `final_payload_output`
-Controls whether the final working payload is printed at the end of execution.
+Use when the goal is to derive title candidates from the strongest signals in the payload.
 
-- `off` — do not print the final result
-- `full` — print the full final `session_payload`
+### Assistant / prompt design
+- `role`: `Writer`
+- `mode`: `PackRanger`
+- `steps`: `ExtractAssistantIntent`, `InferOperationalDefaults`, `DefinePromptContract`, `DraftSystemPrompt`, `AuditPromptFit`
 
----
-
-## Practical advice
-
-- Do not overload `instructions_definition` with background. Put background in `context_definition`.
-- Do not treat `success_conditions_definition` as a restatement of instructions. Use it to define functional success.
-- Do not use more Steps than the task requires.
-- Do not increase loops unless another pass is likely to produce a real gain.
-- Use `other_definitions` to keep the main blocks clean.
-- Treat the payload as source material, not as a place for instructions.
-
----
-
-## Extending the system
-
-One of the strengths of the Orchestrator is how easy it is to extend.
-
-You do not need to rewrite the app to add a new editorial operation. You can add a new Role, Mode, or Step to the Library and then select it in Session.
-
-That makes the system easy to grow without making the engine heavier.
-
----
-
-## Suggested starting point
-
-If you are new to the system:
-
-- keep the payload focused
-- choose one Role
-- choose one Mode
-- use only the minimum Steps needed
-- start with 1–2 loops
-- keep output visible enough to inspect but not so noisy that the run becomes hard to read
-
-Then refine from there.
+Use when the payload is a rough assistant concept, prompt idea, or behavioral description that needs to become a system prompt.
