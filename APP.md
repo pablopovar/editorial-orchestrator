@@ -422,11 +422,6 @@ LIBRARY OBJECTS
     </StepExecution>
   </step_control>
 
-
-5. Return the full, modified `session_payload` only. No preamble, no post-analysis, and no conversational commentary.
-
----
-
 <step_transformer>
   <StepName>
     TranslateFaithfully
@@ -506,162 +501,156 @@ LIBRARY OBJECTS
 </step_transformer>
 
 <step_control>
-  <StepName>TurnTurnover</StepName>
-  <StepID>29</StepID>
+  <StepName>
+    TurnTurnover
+  </StepName>
+  <ID>
+    29
+  </ID>
   <StepExecution>
-  This step does:
-  1. Pause loop execution.
-  2. Print full unchanged session_payload.
-  3. Turn the turn over to the assistant-side continuation scope.
-  4. Wait for the continuation word.
-  5. When the continuation word is received, resume loop execution with the next step.
-  6. Pass session_payload forward unchanged.
-
-  This step cannot (forbidden actions):
-  - Do not modify session_payload.
-  - Do not request rewritten payload from the user.
-  - Do not introduce a new task direction.
-  - Do not replace prior step outputs with its own output.
+    This step does:
+    1. Pause loop execution.
+    2. Print full, unchanged session_payload.
+    3. Hand the turn over to the assistant-side continuation scope.
+    4. Wait for the continuation word.
+    5. When the continuation word is received, resume loop execution with the next step.
+    6. Pass unchanged session_payload forward.
   </StepExecution>
 </step_control>
 
 <step_control>
-  <StepName>AuditAgainstThread</StepName>
-  <StepID>30</StepID>
+  <StepName>
+    AuditAgainstThread
+  </StepName>
+  <ID>
+    30
+  </ID>
   <StepExecution>
-  This step does:
-  1. Compare session_payload against the source thread.
-  2. Identify omissions, inaccuracies, misclassifications, collapsed distinctions, and false integrations.
-  3. Emit an audit report.
-  4. Print full unchanged session_payload.
-
-  This step cannot (forbidden actions):
-  - Do not rewrite.
-  - Do not consolidate.
-  - Do not repair.
-  - Do not modify session_payload.
+    This step does:
+    1. Compare session_payload against the source thread.
+    2. Identify omissions, inaccuracies, misclassifications, collapsed distinctions, and false integrations.
+    3. Print the audit report as step output.
+    4. Print full, unchanged session_payload.
   </StepExecution>
 </step_control>
 
 <step_transformer>
-  <StepName>WriteAddendum</StepName>
-  <StepID>31</StepID>
+  <StepName>
+    WriteAddendum
+  </StepName>
+  <ID>
+    31
+  </ID>
   <StepExecution>
-  This step does:
-  1. Take the audit result.
-  2. Write it as an addendum to the current document.
-  3. Preserve the base document.
-  4. Append only what was missed or wrong.
-  5. Print full improved session_payload.
-
-  This step cannot (forbidden actions):
-  - Do not merge yet.
-  - Do not normalize yet.
-  - Do not rewrite the base document.
+    This step does:
+    1. Analyze session_payload for the current document and the audit result.
+    2. Write the audit result as an addendum to the current document.
+    3. Preserve the base document.
+    4. Append only what was missed or wrong.
+    5. Print full, modified session_payload.
   </StepExecution>
 </step_transformer>
 
 <step_transformer>
-  <StepName>ReclassifyStructure</StepName>
-  <StepID>32</StepID>
+  <StepName>
+    ReclassifyStructure
+  </StepName>
+  <ID>
+    32
+  </ID>
   <StepExecution>
-  This step does:
-  1. Re-run classification using the active domain model as criteria.
-  2. Reclassify domains, verticals, projects, subprojects, and uncertain assignments.
-  3. Append or replace the classification layer accordingly.
-  4. Print full improved session_payload.
-
-  This step cannot (forbidden actions):
-  - Do not re-audit content completeness.
-  - Do not rewrite prose for elegance.
-  - Do not flatten uncertainty into false certainty.
+    This step does:
+    1. Analyze session_payload using the active domain model as criteria.
+    2. Reclassify domains, verticals, projects, subprojects, and uncertain assignments.
+    3. Append or replace the classification layer accordingly.
+    4. Print full, modified session_payload.
   </StepExecution>
 </step_transformer>
 
 <step_transformer>
-  <StepName>IsolateOrphansAndDecisions</StepName>
-  <StepID>33</StepID>
+  <StepName>
+    IsolateOrphansAndDecisions
+  </StepName>
+  <ID>
+    33
+  </ID>
   <StepExecution>
-  This step does:
-  1. Isolate orphaned topics, orphaned decisions, unmade decisions, and stable decisions.
-  2. Surface under-integrated reusable concepts.
-  3. Surface shaping decisions not yet formalized.
-  4. Append the result as its own pass output.
-  5. Print full improved session_payload.
-
-  This step cannot (forbidden actions):
-  - Do not mix this with general open loops.
-  - Do not collapse orphaned and stable decisions into one bucket.
+    This step does:
+    1. Analyze session_payload for orphaned topics, orphaned decisions, unmade decisions, and stable decisions.
+    2. Surface under-integrated reusable concepts.
+    3. Surface shaping decisions not yet formalized.
+    4. Append the result as its own pass output.
+    5. Print full, modified session_payload.
   </StepExecution>
 </step_transformer>
 
 <step_transformer>
-  <StepName>ExtractLineages</StepName>
-  <StepID>34</StepID>
+  <StepName>
+    ExtractLineages
+  </StepName>
+  <ID>
+    34
+  </ID>
   <StepExecution>
-  This step does:
-  1. Extract lineages only.
-  2. Surface concept descent, device emergence, branch splits, and parent-child relationships.
-  3. Keep lineage outputs compact and relational.
-  4. Append the lineage pass output.
-  5. Print full improved session_payload.
-
-  This step cannot (forbidden actions):
-  - Do not repeat full topic descriptions.
-  - Do not turn lineage into general summary.
+    This step does:
+    1. Analyze session_payload for lineages only.
+    2. Surface concept descent, device emergence, branch splits, and parent-child relationships.
+    3. Keep lineage outputs compact and relational.
+    4. Append the lineage pass output.
+    5. Print full, modified session_payload.
   </StepExecution>
 </step_transformer>
 
 <step_transformer>
-  <StepName>EnforceDistinctionLayer</StepName>
-  <StepID>35</StepID>
+  <StepName>
+    EnforceDistinctionLayer
+  </StepName>
+  <ID>
+    35
+  </ID>
   <StepExecution>
-  This step does:
-  1. Enforce the distinctions artifact vs commentary and concept vs implementation across session_payload.
-  2. Identify where those distinctions were blurred.
-  3. Mark where commentary was treated as artifact.
-  4. Mark where conceptual material was treated as implemented.
-  5. Append the distinction pass output.
-  6. Print full improved session_payload.
-
-  This step cannot (forbidden actions):
-  - Do not rewrite the whole document yet.
-  - Do not collapse the two distinctions into one.
+    This step does:
+    1. Analyze session_payload for the distinctions artifact vs commentary and concept vs implementation.
+    2. Identify where those distinctions were blurred.
+    3. Mark where commentary was treated as artifact.
+    4. Mark where conceptual material was treated as implemented.
+    5. Append the distinction pass output.
+    6. Print full, modified session_payload.
   </StepExecution>
 </step_transformer>
 
 <step_transformer>
-  <StepName>ConsolidatePasses</StepName>
-  <StepID>36</StepID>
+  <StepName>
+    ConsolidatePasses
+  </StepName>
+  <ID>
+    36
+  </ID>
   <StepExecution>
-  This step does:
-  1. Merge the base document with the addendum, reclassification, orphan/decision pass, lineage pass, and distinction pass.
-  2. Produce one clean consolidated document.
-  3. Preserve distinctions.
-  4. Remove duplication.
-  5. Keep unresolved items unresolved.
-  6. Avoid flattening ambiguity.
-  7. Print full consolidated session_payload.
-
-  This step cannot (forbidden actions):
-  - Do not erase unresolved status.
-  - Do not force certainty where the prior passes preserved uncertainty.
+    This step does:
+    1. Analyze session_payload for the base document, addendum, reclassification, orphan or decision pass, lineage pass, and distinction pass.
+    2. Merge them into one clean consolidated document.
+    3. Preserve distinctions.
+    4. Remove duplication.
+    5. Keep unresolved items unresolved.
+    6. Avoid flattening ambiguity.
+    7. Print full, modified session_payload.
   </StepExecution>
 </step_transformer>
 
 <step_control>
-  <StepName>AuditConsistency</StepName>
-  <StepID>37</StepID>
+  <StepName>
+    AuditConsistency
+  </StepName>
+  <ID>
+    37
+  </ID>
   <StepExecution>
-  This step does:
-  1. Audit the consolidated document for internal consistency.
-  2. Check naming consistency, hierarchy consistency, duplicate categories, unresolved term drift, and topics living in multiple places without explicit overlap note.
-  3. Emit a final consistency audit report.
-  4. Print full unchanged session_payload.
-
-  This step cannot (forbidden actions):
-  - Do not modify session_payload.
-  - Do not rewrite the document directly.
+    This step does:
+    1. Analyze the consolidated document for internal consistency.
+    2. Check naming consistency, hierarchy consistency, duplicate categories, unresolved term drift, and topics living in multiple places without explicit overlap note.
+    3. Print the final consistency audit report as step output.
+    4. Print full, unchanged session_payload.
   </StepExecution>
 </step_control>
 
