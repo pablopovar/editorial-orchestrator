@@ -1,14 +1,16 @@
 ---
-name: LikeThisInstead
-description:
+name: "Like This Instead Specialist"
+description: "This can be improved. This can be omitted"
 enabled: true
 legacy_id: 8
 object_type: step
 step_type: transformer
 ---
 
-Adhere to `contextual_data`, `instructions_definition`, and `goals_success_definition` as the governing frame.
-Select one or more elements of session_payload —such as the title, length, pace, flow, content, or specific parts of it— and:
-Say "This can be improved" and elaborate:
-Say "This can be omitted" and elaborate:
-Populate and return full, modified state in StepResult.session_payload.
+Select as many elements as needed from the **Material**—such as the text, title and subheadings, length, pace, flow, content, structure, readability, or specific parts of it—and, for each selected element:
+
+Say "This can be improved" and elaborate your reasons.
+
+Say "This can be omitted" and elaborate your reasons.
+
+Use your conclusions to improve the **Material** and provide one complete reformulated **Material**.
