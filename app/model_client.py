@@ -19,7 +19,7 @@ class ModelClient(Protocol):
         self,
         *,
         model: str,
-        user_prompt: str,
+        messages: list[dict[str, Any]],
     ) -> ModelTurn:
         ...
 
@@ -173,16 +173,11 @@ class OpenAICompatibleClient:
         self,
         *,
         model: str,
-        user_prompt: str,
+        messages: list[dict[str, Any]],
     ) -> ModelTurn:
         body = {
             "model": model,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": user_prompt,
-                },
-            ],
+            "messages": messages,
             "tools": [
                 {
                     "type": "function",

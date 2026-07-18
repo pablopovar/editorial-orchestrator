@@ -1250,7 +1250,7 @@ function renderTrace(steps) {
 
     outputLabel.textContent =
       step.payload_returned === false
-        ? "Material retained"
+        ? "Material handoff failed"
         : "Replacement material returned";
 
     const output =
@@ -1264,7 +1264,7 @@ function renderTrace(steps) {
 
     handoffNote.textContent =
       step.payload_returned === false
-        ? "The model did not return replacement material, so EdOr kept the previous material for the next task."
+        ? "The model did not return complete Material. EdOr stopped before the next task."
         : "EdOr handed this material to the next task.";
 
     section.append(
