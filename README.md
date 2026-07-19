@@ -157,3 +157,11 @@ Then keep that workflow and use it again—without reconstructing the process fr
 
 **EdOr**  
 One source. New combinations. Different finished results.
+
+
+
+## License
+
+Copyright (C) 2026 Pablo Povarchik
+
+EdOr is licensed under the GNU General Public License v3.0 only. See [LICENSE](LICENSE).
